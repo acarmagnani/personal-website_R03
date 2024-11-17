@@ -24,6 +24,17 @@
     padding-bottom: var(--pad);
 }
 
+.light-bg {
+    background-color: var(--bg-c-1);
+    position: relative;
+}
+
+.dark-bg {
+    background-color: var(--bg-c-2);
+    position: relative;
+}
+
+
 
 
 
@@ -117,19 +128,19 @@
 
 /* delays */
 ._delay-1 {
-    animation-delay: .5s;
+    animation-delay: .05s;
 }
 
 ._delay-2 {
-    animation-delay: 1s;
+    animation-delay: .1s;
 }
 
 ._delay-3 {
-    animation-delay: 1.2s;
+    animation-delay: .15s;
 }
 
 ._delay-4 {
-    animation-delay: 1.4s;
+    animation-delay: .2s;
 }
 
 ._delay-5 {
@@ -212,7 +223,7 @@ h2 {
 
 h3 {
     font-family: "Fleischmann";
-    font-size: clamp(14px, 3vw, 18px);
+    font-size: clamp(14px, 3vw, 20px);
     font-style: italic;
 }
 
@@ -241,10 +252,7 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-}
-
-.grid-bg-1 {
-    background-color: var(--bg-c-1);
+    margin: 0;
 }
 
 .grid-item {
@@ -268,8 +276,12 @@ body {
 
 /* HEADER */
 
-.header-item {
-    left: -10vw;
+.header-item-1 {
+    left: -11vw;
+}
+
+.header-item-1 {
+    left: -5vw;
 }
 
 .header-item {
@@ -285,68 +297,19 @@ body {
     white-space: nowrap;
 }
 
-/* FOOTER */
+.header-item {
+    & ul, h1 {
+        display: flex;
+        justify-content: center;
+    }
 
-footer {
-    color: var(--txt-c-2);
-    
-    margin: 0;
-
-    background-color: var(--bg-c-2);
-    z-index: 0;
-}
-
-#Footer {
-    position: absolute;
-    width: 100%;
-    overflow-x: hidden;
-
-    & h1,h2,h3,b1 {
-        background-color: transparent;
-        color: var(--txt-c-2);
+    & li {
+        padding: 0 var(--pad);
     }
 }
-
-.footer-container {
-    height: 50vh;
-    padding: var(--pad-body);
-    display: flex;
-    align-items: center;
-}
-
-.footer-info, .footer-title {
-    padding: 30px 0;
-}
-
-
 
 
 /* SCROLL TO TOP */
 .backtotop-item-1_1 {
     right: -20vw;
-}
-
-
-
-
-/* MEDIA QUERIE */
-
-@media (min-width: 500px) {
-    
-}
-
-@media (min-width: 1000px) {  
-
-    #Footer {
-        display: flex;
-        justify-content: center;
-    }
-    .footer-content {
-        display: grid;
-        gap: var(--pad-body);
-        grid-template-columns: 1fr 1fr;
-    }
-    .footer-title {
-        align-self: center;
-    }
 }

@@ -1,0 +1,22 @@
+@import url(var.css);
+
+
+.exp_title {
+    display: inline-block;
+    margin-top: 20px;
+    
+}
+
+.exp-item {
+    padding-top: 5px;
+}
+
+.cv-item-1_1 {
+    width: clamp(150px, 70vw, 600px);
+    left: -5vw;
+}
+
+.cv-item-2_1 {
+    width: clamp(120px, 70vw, 500px);
+    left: 5vw;
+}

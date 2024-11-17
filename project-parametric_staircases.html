@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Antonio Carmagnani - Parametric Staircases</title>
+    
+        <!-- styles -->
+        <link rel="stylesheet" href="assets/styles/styles.css">
+        <link rel="stylesheet" href="assets/styles/styles-arch-proj.css">
+        <link rel="stylesheet" href="assets/styles/styles-bg-dark.css">
+    
+        <!-- scripts -->
+        <script src="assets/scripts/scripts.js"></script>
+        
+        <!-- vercel -->
+        <script>
+            window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+        </script>
+        <script defer src="/_vercel/insights/script.js"></script>
+    
+    </head>
+    <body>
+        <div id="Body">
+    
+            <div id="Noise_bg-1"></div>
+            
+            <div id="Header"></div>
+    
+            <div class="grid STR-grid-1 dark-bg">
+            
+                <div class="grid-item STR-item STR-item-1_1"> 
+                    <div class="proj-txt">
+                        <b1>During my professional tenure at the various architecture firms I worked at, I noticed a significant difficulty in the design of stairs by the architectural team. Due to its complex modeling, most current architectural software demonstrates an inefficient workflow for this. With this in mind, I decided to create a Grasshopper script to facilitate this process, aiming to develop a method that could be replicated by anyone, even without any knowledge of this language.</b1>
+                    </div>
+                </div>
+        
+            </div>
+        
+            <div class="grid STR-grid-2">
+        
+                <div class="grid-item STR-item STR-item-2_1 container-2"> 
+                    <div class="proj-txt">
+                        <b1>With my script in hand, the first step would be to draw your staircase plan in Rhino and organize the layers according to the structure described in Grasshopper. This plan should contain the perimeter of the staircase, the tread lines, the perimeter of the landing, and a guide curve that passes through the middle of each step, as seen in the image below. Additionally, it is necessary to create the staircase plan for each floor, as well as an extra one for the roof floor, with each plan at its correct level. This is because Grasshopper calculates the floor height based on the distance between the staircase plans. It is important to use the format described in the script, as I used the Dynamic Geometry Pipeline command from the <a href="https://www.food4rhino.com/en/app/human" target="_blank" rel="noopener" class="_highlight-black">Human <span class="top-right-arrow"></span></a> plugin to import the geometries from Rhino to Grasshopper according to their layers to automate this process.</b1>
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_2"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img10.jpg">
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_3 container-2"> 
+                    <div class="proj-txt">
+                        <b1>This entire script was developed using clusters to better control the organization of the file, thus enabling the selection of specific outputs for your project (more details on this later). The second step would be to connect the "LAYERS" cluster to the "SUBD GUIDE CURVE" cluster according to their respective input and output names to generate guide curves for creating a SubD that will act as a ceiling for your staircase. I believe that SubD is a very interesting option for modeling the bottom of the staircase, as it allows for great freedom.</b1>
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_4"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img11.jpg">
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_5 container-2"> 
+                    <div class="proj-txt">
+                        <b1>Now, it is necessary to "bake" the guide curves and use the "SubDLoft" command in Rhino to create a base SubD, which can be modified as needed. Do not forget to add this SubD to the SubD command of the script interface in Grasshopper.</b1>
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_6"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img12.jpg">
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_7 container-2"> 
+                    <div class="proj-txt">
+                        <b1>Once this is done, the script will model your staircase based on the provided information. It is important to note that this model will automatically update as the plan and the ceiling SubD are modified.</b1>
+                        <div class="pad"></div>
+                        <b1>The "STAIRS - FULL" command creates a staircase with a full base, not considering the SubD created in the previous steps.</b1>
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_8"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img13.jpg">
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_9 container-2"> 
+                    <div class="proj-txt">
+                        <b1>The "BOOLEAN SUBD" command interrupts the previous model with the SubD, which can be added to the "STAIRS - FULL" command and/or the "LANDING" command.</b1>
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_10"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img14.jpg">
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_11"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img15.jpg">
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_12 container-2"> 
+                    <div class="proj-txt">
+                        <b1>See below some examples of stairs modeled using the script in question.</b1>
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_13"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img7.jpg">
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_14"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img8.jpg">
+                    </div>
+                </div>
+        
+                <div class="grid-item STR-item STR-item-2_15"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img9.jpg">
+                    </div>
+                </div>
+        
+            </div>
+        
+            <div class="grid STR-grid-3 dark-bg">
+        
+                <div class="grid-item STR-item STR-item-3_1"> 
+                    <div class="proj-txt">
+                        <b1>This script was widely used during my time working at Isay Weinfeld's office in São Paulo on various projects. See below one of the stairs I developed for a residential project already under construction.</b1>
+                    </div>
+                </div>
+        
+            </div>
+        
+            <div class="grid STR-grid-4">
+        
+                <div class="grid-item STR-item STR-item-4_1"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img1.jpg">
+                    </div>
+                </div>
+                <div class="grid-item STR-item STR-item-4_2"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img2.jpg">
+                    </div>
+                </div>
+                <div class="grid-item STR-item STR-item-4_3"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img3.jpg">
+                    </div>
+                </div>
+                <div class="grid-item STR-item STR-item-4_4"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img4.jpg">
+                    </div>
+                </div>
+                <div class="grid-item STR-item STR-item-4_5"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img5.jpg">
+                    </div>
+                </div>
+                <div class="grid-item STR-item STR-item-4_6"> 
+                    <div class="proj-img">
+                        <img loading="lazy" src="../assets/images/projects/architecture/STR/STR_img6.jpg">
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div id="BackToTop"></div>
+            
+        </div>
+    </body>
+</html>

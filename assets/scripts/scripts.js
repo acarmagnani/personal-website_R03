@@ -32,7 +32,7 @@ function startTypewriterAnimation() {
         { element: document.getElementById("typewriter-4"), text: "OMPUTATION" }
     ];
 
-    const typingSpeed = 75; // Speed for typing in ms
+    const typingSpeed = 95; // Speed for typing in ms
     const deletingSpeed = 75; // Speed for deleting in ms
     const delayAfterTyping = 1000; // Delay after typing in ms
     const delayAfterDeleting = 500; // Delay after deleting in ms
@@ -95,4 +95,11 @@ function startTypewriterAnimation() {
     }
 
     startAnimation();
+}
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
 }

@@ -1,12 +1,12 @@
 @import url(var.css);
 
 #Noise_bg-1:after {
-    animation: grain 10s steps(10) infinite;
+    animation: grain 15s steps(10) infinite;
     background-image: url(../../assets/images/bg/bg_noise.png);
     content: "";
     height: 300%;   
     left: -50%;
-    opacity: .65;
+    opacity: .6;
     position: fixed;
     top: -110%;
     width: 300%;
@@ -48,9 +48,6 @@ h3 {
 b1 {
     color: var(--txt-c-2);
 }
-
-
-
 
 
 /* HEADER */
