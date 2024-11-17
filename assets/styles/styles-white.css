@@ -1,0 +1,50 @@
+@import url(var.css);
+
+body {  
+    background:
+    linear-gradient(90deg, var(--bg-c-1) calc(var(--dot-space) - var(--dot-size)), transparent 1%) center / var(--dot-space) var(--dot-space),
+    linear-gradient(var(--bg-c-1) calc(var(--dot-space) - var(--dot-size)), transparent 1%) center / var(--dot-space) var(--dot-space),
+    var(--dot-c-1);
+}
+
+h1 {
+    color: var(--txt-c-1);
+}
+
+h2 {
+    color: var(--txt-c-3);
+}
+
+h3 {
+    color: var(--txt-c-3);
+    background-color: var(--bg-c-1);
+}
+
+b1 {
+    color: var(--txt-c-1);
+    background-color: var(--bg-c-1);
+}
+
+
+
+
+/* HEADER */
+.header-title-name {
+    background-color: var(--bg-c-1);
+}
+
+
+
+
+
+/* CONTAINER */
+.container-1 {
+    background-color: var(--container-bg-c-1);
+    border-color: var(--container-border-c-1);
+    box-shadow: calc(var(--container-bs-size)*(-1)) var(--container-bs-size) var(--container-bs-c-1);
+}
+
+.container-2 {
+    background-color: var(--container-bg-c-1);
+    border-color: var(--container-border-c-1);
+}

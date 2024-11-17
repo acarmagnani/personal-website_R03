@@ -1,0 +1,76 @@
+@import url(var.css);
+
+#Noise_bg-1:after {
+    animation: grain 10s steps(10) infinite;
+    background-image: url(../../assets/images/bg/bg_noise.png);
+    content: "";
+    height: 300%;   
+    left: -50%;
+    opacity: .65;
+    position: fixed;
+    top: -110%;
+    width: 300%;
+}
+
+@keyframes grain {
+    0%, 100% { transform:translate(0, 0) }
+    10% { transform:translate(-5%, -10%) }
+    20% { transform:translate(-15%, 5%) }
+    30% { transform:translate(7%, -25%) }
+    40% { transform:translate(-5%, 25%) }
+    50% { transform:translate(-15%, 10%) }
+    60% { transform:translate(15%, 0%) }
+    70% { transform:translate(0%, 15%) }
+    80% { transform:translate(3%, 35%) }
+    90% { transform:translate(-10%, 10%) }
+}
+
+body {   
+    background-color: var(--bg-c-2);
+}
+
+h1,h2,h3,b1,b2,b3 {
+    background-color: transparent;
+}
+
+h1 {
+    color: var(--txt-c-2);
+}
+
+h2 {
+    color: var(--txt-c-2);
+}
+
+h3 {
+    color: var(--txt-c-2);
+}
+
+b1 {
+    color: var(--txt-c-2);
+}
+
+
+
+
+
+/* HEADER */
+.header-title-name {
+    background-color: var(--bg-c-2);
+}
+
+
+
+
+
+
+/* CONTAINER */
+.container-1 {
+    background-color: var(--container-bg-c-2);
+    border-color: var(--container-border-c-2);
+    box-shadow: calc(var(--container-bs-size)*(-1)) var(--container-bs-size) var(--container-bs-c-2);
+}
+
+.container-2 {
+    background-color: var(--container-bg-c-2);
+    border-color: var(--container-border-c-2);
+}
