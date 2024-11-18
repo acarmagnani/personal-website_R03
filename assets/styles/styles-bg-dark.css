@@ -1,5 +1,31 @@
 @import url(var.css);
 
+:root {
+
+    /* bg */
+    --bg-c: var(--bg-c-2);
+
+    /* text */
+    --h1-c: var(--txt-c-2);
+    --h2-c: var(--txt-c-2);
+    --h3-c: var(--txt-c-2);
+    --b1-c: var(--txt-c-2);
+    --h1-bg-c: transparent;
+    --h2-bg-c: transparent;
+    --h3-bg-c: transparent;
+    --b1-bg-c: transparent;
+
+    /* container */
+    --container-bg-c: var(--container-bg-c-2);
+    --container-border-c: var(--container-border-c-2);
+    --container-bs-c: var(--container-bs-c-2);
+}
+
+
+
+
+
+
 #Noise_bg-1:after {
     animation: grain 15s steps(10) infinite;
     background-image: url(../../assets/images/bg/bg_noise.png);
@@ -23,51 +49,4 @@
     70% { transform:translate(0%, 15%) }
     80% { transform:translate(3%, 35%) }
     90% { transform:translate(-10%, 10%) }
-}
-
-body {   
-    background-color: var(--bg-c-2);
-}
-
-h1,h2,h3,b1,b2,b3 {
-    background-color: transparent;
-}
-
-h1 {
-    color: var(--txt-c-2);
-}
-
-h2 {
-    color: var(--txt-c-2);
-}
-
-h3 {
-    color: var(--txt-c-2);
-}
-
-b1 {
-    color: var(--txt-c-2);
-}
-
-
-/* HEADER */
-.header-title-name {
-    background-color: var(--bg-c-2);
-}
-
-
-
-
-
-
-/* CONTAINER */
-.container-1 {
-    background-color: var(--container-bg-c-2);
-    border-color: var(--container-border-c-2);
-    box-shadow: calc(var(--container-bs-size)*(-1)) var(--container-bs-size) var(--container-bs-c-2);
-}
-
-.container-2 {
-    background-color: var(--container-bg-c-2);
-    border-color: var(--container-border-c-2);
 }

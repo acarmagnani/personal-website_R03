@@ -42,7 +42,7 @@
     width: clamp(150px, 60vw, 550px);
 }
 .works-item-EVR {
-    left: 18vw;
+    left: -12vw;
     width: clamp(120px, 40vw, 300px);
 }
 .works-item-LAS {
