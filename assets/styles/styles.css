@@ -275,7 +275,7 @@ b1 {
     }
 
     & li {
-        padding: 0 var(--pad);
+        padding: 0 20px;
     }
 }
 
