@@ -30,7 +30,7 @@
     --marg-header: clamp(10px, 5vw, 40px);  
 
     /* container */
-    --container-bs-size: 3px;
+    --container-bs-size: 4px;
     --container-border-size: 1px;
 
     --container-bg-c-1: white;
