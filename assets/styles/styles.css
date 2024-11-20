@@ -40,21 +40,6 @@
 
 /* ANIMATIONS */
 
-/* move down */
-@keyframes movedown {
-    from {
-        top: 0;
-    }
-    to {
-        top: clamp(25px, 7vw, 50px);
-    }
-}
-
-._movedown {
-    animation: movedown forwards;
-    animation-duration: .5s;
-}
-
 /* fade */
 @keyframes fadein {
     from {
@@ -126,6 +111,18 @@
     text-decoration: none;
 }
 
+/* hover - invert colors */
+._invert-c {
+    transition-duration: var(--def-duration);
+}
+._invert-c:hover {
+    background-color: var(--b1-c);
+
+    & h1,h2,h3,b1 {
+        color: var(--bg-c);
+    }
+}
+
 /* delays */
 ._delay-1 {
     animation-delay: .05s;
@@ -141,14 +138,6 @@
 
 ._delay-4 {
     animation-delay: .2s;
-}
-
-._delay-5 {
-    animation-delay: 1.6s;
-}
-
-._delay-6 {
-    animation-delay: 1.8s;
 }
 
 
@@ -249,6 +238,7 @@ b1 {
 
 
 
+
 /* HEADER */
 
 .header-item-2 {
@@ -278,6 +268,7 @@ b1 {
         padding: 0 20px;
     }
 }
+
 
 
 
