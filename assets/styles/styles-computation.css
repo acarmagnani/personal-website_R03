@@ -1,0 +1,8 @@
+@import url(var.css);
+
+.comp-item {
+
+    & li {
+        padding: 5px 0;
+    }
+}

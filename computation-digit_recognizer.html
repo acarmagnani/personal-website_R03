@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AC - Digit Recognizer Competition</title>
+    
+        <!-- styles -->
+        <link rel="stylesheet" href="assets/styles/styles.css">
+        <link rel="stylesheet" href="assets/styles/styles-comp-proj.css">
+        <link rel="stylesheet" href="assets/styles/styles-bg-dark.css">
+        <!-- Prism.js Okaidia Theme -->
+        <link rel="stylesheet" href="assets/styles/styles-code.css">
+    
+        <!-- scripts -->
+        <script src="assets/scripts/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+        <!-- vercel -->
+        <script>
+            window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+        </script>
+        <script defer src="/_vercel/insights/script.js"></script>
+
+    </head>
+    <body>
+    
+        <div id="Body">
+    
+            <div id="Noise_bg-1"></div>
+    
+            <div id="Header"></div>
+    
+            <!-- Introduction -->
+            <div class="grid DIG-grid-1">
+                <div class="grid-item comp-item DIG-item container-2">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>1. Introduction</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            The Kaggle competition <a href="https://www.kaggle.com/competitions/digit-recognizer" target="_blank" rel="noopener" class="_highlight-black">"Digit Recognizer"<span class="top-right-arrow"></span></a> challenges participants to correctly classify tens of thousands of handwritten digits from the classic MNIST dataset. This dataset, widely regarded as the “hello world” of computer vision, consists of 28x28 pixel grayscale images of handwritten digits. The competition provides an excellent opportunity to explore and compare classification methods, ranging from support vector machines (SVM) to neural networks. 
+                            <br>
+                            My approach, which focused on experimenting with various algorithms and optimizing their performance, achieved a score of 0.994, placing me in the top 13% on the leaderboard.
+                            <br>
+                            If you're interested in viewing the full code, here's the <a href="https://github.com/acarmagnani/digit_recognizer" target="_blank" rel="noopener" class="_highlight-black">Github repo<span class="top-right-arrow"></span></a> for this project.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Preparation -->
+            <div class="grid DIG-grid-2">
+                <div class="grid-item comp-item DIG-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>2. Data Preparation</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            The data preparation process is crucial for ensuring the model can effectively learn from the dataset. This involves loading the data, normalizing it, splitting it into training and validation sets, and previewing the images to confirm their quality and structure.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# Loading Data
+train = pd.read_csv('../data/external/train.csv')
+test = pd.read_csv('../data/external/test.csv')
+
+# Separating Features and Labels
+X = train.drop("label", axis=1)
+y = train["label"]
+
+# Data Normalization
+X = X / 255.0
+# Applying transformations to test.csv
+X_test = test / 255.0
+
+# Splitting Data into Training and Validation Sets
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.1, random_state=1)
+
+# Preview Images
+X_reshaped = X_train.to_numpy().reshape(-1, 28, 28, 1)
+plt.figure(figsize=(15, 5))
+for i in range(30):
+    plt.subplot(3, 10, i+1)
+    plt.imshow(X_reshaped[i, :, :, 0], cmap=plt.cm.binary)
+    plt.axis('off')
+plt.subplots_adjust(wspace=-0.1, hspace=-0.1)
+plt.show()
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            After splitting the data, the training set is reshaped to 28x28 pixel images for visualization. Below is a preview of some images from the training set:
+                        </b1>
+                    </div>
+                    <div class="comp-img">
+                        <img loading="lazy" src="/assets/images/projects/computation/DIG/data-preview_R00.png">
+                    </div>
+                </div>
+            </div>
+
+           <!-- Dense Neural Network -->
+            <div class="grid DIG-grid-3">
+                <div class="grid-item comp-item DIG-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>3. Dense Neural Network</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            A dense neural network, or fully connected neural network (FCNN), connects each neuron in one layer to every neuron in the next. The model used in this project includes three dense layers:
+                            <ul class="topics">
+                                <li><b>Layer 1 and 2:</b> Use ReLU (Rectified Linear Unit) activation to capture complex patterns and avoid vanishing gradients.</li>
+                                <li><b>Layer 3:</b> Uses softmax activation to output probabilities for each digit (0-9), ensuring outputs sum to 1 for multi-class classification.</li>
+                            </ul>
+                            This approach starts with a basic model, refining its complexity based on performance.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# Defining the Model Architecture
+model = Sequential([
+    Dense(units=25, activation='relu'),
+    Dense(units=15, activation='relu'),
+    Dense(units=10, activation='softmax')
+])
+
+# Compiling the Model
+model.compile(
+    optimizer=Adam(learning_rate=1e-3),
+    loss=SparseCategoricalCrossentropy(),
+    metrics=['accuracy']
+)
+
+# Training the Model
+model.fit(X_train, y_train, epochs=30, validation_data=(X_val, y_val))
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            During training, Adam optimizer and SparseCategoricalCrossentropy loss were used to improve accuracy. Below are the first few epochs of the training process:
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-plaintext">
+Epoch 1/30
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 1s 1ms/step - accuracy: 0.9917 - loss: 0.0269 - val_accuracy: 0.9521 - val_loss: 0.2329
+Epoch 2/30
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 1s 1ms/step - accuracy: 0.9922 - loss: 0.0241 - val_accuracy: 0.9474 - val_loss: 0.2693
+Epoch 3/30
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 1s 1ms/step - accuracy: 0.9919 - loss: 0.0264 - val_accuracy: 0.9521 - val_loss: 0.2538
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            Although the model achieved high accuracy on the training data, it struggled with validation data, indicating overfitting. To address this, regularization techniques could be applied to penalize complexity and focus on meaningful patterns, improving generalization.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Understanding L2 Regularization -->
+            <div class="grid DIG-grid-4">
+                <div class="grid-item comp-item DIG-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>4. Understanding L2 Regularization</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            L2 Regularization (also called weight decay) penalizes large weights in the model by adding a term to the loss function proportional to the sum of the squared weights. This encourages smaller weights, leading to smoother and more generalizable decision boundaries.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# Defining a Model with L2 Regularization
+model = Sequential([
+    Dense(units=25, activation='relu', kernel_regularizer=L2(0.001)),
+    Dense(units=15, activation='relu', kernel_regularizer=L2(0.001)),
+    Dense(units=10, activation='softmax', kernel_regularizer=L2(0.001))
+])
+
+# Compiling and Training the Model
+model.compile(
+    optimizer=Adam(learning_rate=1e-3),
+    loss=SparseCategoricalCrossentropy(),
+    metrics=['accuracy']
+)
+model.fit(X_train, y_train, epochs=30, validation_data=(X_val, y_val))
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            By applying L2 Regularization with a strength of 0.001, the model reduces overfitting by keeping the weights small. Below are the first few epochs of training with L2 Regularization:
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-plaintext">
+Epoch 1/30
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 3s 1ms/step - accuracy: 0.7596 - loss: 0.8735 - val_accuracy: 0.9155 - val_loss: 0.3734
+Epoch 2/30
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 1s 1ms/step - accuracy: 0.9291 - loss: 0.3518 - val_accuracy: 0.9388 - val_loss: 0.3181
+Epoch 3/30
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 1s 1ms/step - accuracy: 0.9393 - loss: 0.3115 - val_accuracy: 0.9414 - val_loss: 0.3026
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            Using L2 Regularization, the gap between training and validation performance decreases, resulting in a more generalizable model. However, to further reduce overfitting, additional techniques like Dropout can be combined with L2 Regularization to improve the model's performance and generalization.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Defining a Deeper, More Complex Model -->
+            <div class="grid DIG-grid-5">
+                <div class="grid-item comp-item DIG-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>5. Defining a Deeper, More Complex Model</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            To improve model performance and capture more nuanced patterns, a deeper neural network was designed. This model includes additional layers, a higher number of neurons, L2 Regularization, and Dropout to balance complexity and generalization. Dropout randomly ignores neurons during training to prevent overfitting.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# Defining the Model
+model = Sequential([
+    Dense(units=512, activation='relu', kernel_regularizer=L2(0.001)),  # Increased units
+    Dropout(0.4),  # Add dropout to prevent overfitting
+    Dense(units=256, activation='relu', kernel_regularizer=L2(0.001)),
+    Dropout(0.4),
+    Dense(units=128, activation='relu', kernel_regularizer=L2(0.001)),
+    Dropout(0.3),
+    Dense(units=64, activation='relu', kernel_regularizer=L2(0.001)),
+    Dropout(0.3),
+    Dense(units=32, activation='relu', kernel_regularizer=L2(0.001)),
+    Dense(units=10, activation='softmax', kernel_regularizer=L2(0.001))
+])
+
+# Compiling and Training the Model
+model.compile(
+    optimizer=Adam(learning_rate=5e-5),  # Reduced learning rate for better convergence
+    loss=SparseCategoricalCrossentropy(),
+    metrics=['accuracy']
+)
+model.fit(X_train, y_train, epochs=50, validation_data=(X_val, y_val))
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            By increasing the number of neurons and layers, the model captures more detailed features. Regularization (L2) and Dropout ensure the model remains generalizable while reducing overfitting.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-plaintext">
+Epoch 1/50
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.2657 - loss: 3.1987 - val_accuracy: 0.8098 - val_loss: 1.6949
+Epoch 2/50
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 5s 4ms/step - accuracy: 0.6886 - loss: 1.8662 - val_accuracy: 0.8867 - val_loss: 1.2846
+Epoch 3/50
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8061 - loss: 1.4826 - val_accuracy: 0.9083 - val_loss: 1.1397
+# Truncated for brevity...
+Epoch 50/50
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 5s 4ms/step - accuracy: 0.9839 - loss: 0.2517 - val_accuracy: 0.9802 - val_loss: 0.2669
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            This deeper architecture achieved a validation accuracy of 98.02% in 50 epochs. The combination of additional layers, regularization, and Dropout proved effective in improving both training and validation performance.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Convolutional Neural Network (CNN) -->
+            <div class="grid DIG-grid-6">
+                <div class="grid-item comp-item DIG-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>6. Convolutional Neural Network (CNN)</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            Convolutional Neural Networks (CNNs) are highly effective for image data, as they are structured to capture spatial hierarchies, making them ideal for tasks like digit recognition.
+                        </b1>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            <b>Data Reshaping:</b> Before training the CNN, the dataset was reshaped from 1D arrays (28x28 flattened) into 2D arrays (28x28 grids) with a depth of 1 for grayscale images. This structure aligns with the requirements of CNNs for processing spatial data.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# Reshape the Data
+X_train = X_train.to_numpy().reshape(-1, 28, 28, 1)
+X_val = X_val.to_numpy().reshape(-1, 28, 28, 1)
+X_test = X_test.to_numpy().reshape(-1, 28, 28, 1)
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            <b>Defining the CNN Architecture:</b> The model includes three convolutional blocks, each with Conv2D, MaxPooling, and Dropout layers. These layers progressively learn more complex features, followed by Flatten and Dense layers for classification.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# CNN Model
+model = Sequential([
+    Conv2D(32, kernel_size=(3, 3), activation='relu', padding='Same', 
+        kernel_regularizer=L2(0.0001), input_shape=(28, 28, 1)),
+    MaxPooling2D(pool_size=(2, 2)),
+    Dropout(0.2),
+    
+    Conv2D(64, kernel_size=(3, 3), activation='relu', padding='Same', 
+        kernel_regularizer=L2(0.0001)),
+    MaxPooling2D(pool_size=(2, 2)),
+    Dropout(0.3),
+    
+    Conv2D(128, kernel_size=(3, 3), activation='relu', padding='Same', 
+        kernel_regularizer=L2(0.0001)),
+    MaxPooling2D(pool_size=(2, 2)),
+    Dropout(0.3),
+    
+    Flatten(),
+    Dense(64, activation='relu', kernel_regularizer=L2(0.0001)),
+    Dropout(0.2),
+    Dense(10, activation='softmax')
+])
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            <b>Compiling and Training:</b> The model was compiled with Adam optimizer (learning rate: 1e-4) and Sparse Categorical Crossentropy loss. The training achieved a validation accuracy of 99.12% after 50 epochs.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+model.compile(
+    optimizer=Adam(learning_rate=1e-4),
+    loss=SparseCategoricalCrossentropy(),
+    metrics=['accuracy']
+)
+model.fit(X_train, y_train, epochs=50, validation_data=(X_val, y_val))
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            Below are the training results for the first and last few epochs, demonstrating steady improvements in both accuracy and loss:
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-plaintext">
+Epoch 1/50
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 13s 9ms/step - accuracy: 0.4787 - loss: 1.5297 - val_accuracy: 0.9433 - val_loss: 0.2257
+Epoch 2/50
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 11s 10ms/step - accuracy: 0.9082 - loss: 0.3163 - val_accuracy: 0.9626 - val_loss: 0.1593
+...
+Epoch 49/50
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 12s 11ms/step - accuracy: 0.9921 - loss: 0.0510 - val_accuracy: 0.9933 - val_loss: 0.0500
+Epoch 50/50
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 13s 11ms/step - accuracy: 0.9925 - loss: 0.0500 - val_accuracy: 0.9912 - val_loss: 0.0511
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            The CNN effectively captures spatial hierarchies in the image data, making it highly accurate for digit recognition tasks.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Augmentation -->
+            <div class="grid DIG-grid-7">
+                <div class="grid-item comp-item DIG-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>7. Data Augmentation</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            Data augmentation generates new, slightly altered versions of the existing images by applying random transformations. This process expands the training dataset and makes the model more robust to variations in real-world data, such as rotated, shifted, or zoomed-in digits. For digit recognition, these transformations help the model learn generalizable features and reduce overfitting.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# Data Augmentation
+datagen = ImageDataGenerator(
+    rotation_range=5,
+    zoom_range=0.1,
+    width_shift_range=0.1,
+    height_shift_range=0.1
+)
+datagen.fit(X_train)
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            <b>Updated CNN Architecture:</b> Batch Normalization was added to stabilize training and accelerate convergence. The CNN now includes three convolutional blocks, each with Conv2D, Batch Normalization, MaxPooling, and Dropout layers. These layers progressively learn more complex features, followed by Flatten and Dense layers for classification.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# CNN with Batch Normalization
+model = Sequential([
+    Conv2D(64, kernel_size=(3, 3), activation='relu', padding='Same',
+        kernel_regularizer=L2(0.0001), input_shape=(28, 28, 1)),
+    BatchNormalization(),
+    MaxPooling2D(pool_size=(2, 2)),
+    Dropout(0.3),
+
+    Conv2D(128, kernel_size=(3, 3), activation='relu', padding='Same',
+        kernel_regularizer=L2(0.0001)),
+    BatchNormalization(),
+    MaxPooling2D(pool_size=(2, 2)),
+    Dropout(0.3),
+
+    Conv2D(256, kernel_size=(3, 3), activation='relu', padding='Same',
+        kernel_regularizer=L2(0.0001)),
+    BatchNormalization(),
+    MaxPooling2D(pool_size=(2, 2)),
+    Dropout(0.4),
+
+    Flatten(),
+    Dense(128, activation='relu', kernel_regularizer=L2(0.0001)),
+    Dropout(0.4),
+    Dense(64, activation='relu', kernel_regularizer=L2(0.0001)),
+    Dropout(0.3),
+
+    Dense(10, activation='softmax')
+])
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            <b>Training Results:</b> The model was trained with augmented data and achieved remarkable accuracy. Below are the results of the first and last few epochs, demonstrating the improvements in accuracy and reduction in loss:
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-plaintext">
+Epoch 1/50
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 55s 44ms/step - accuracy: 0.2394 - loss: 2.3610 - val_accuracy: 0.9124 - val_loss: 0.4081
+Epoch 2/50
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 55s 47ms/step - accuracy: 0.7042 - loss: 0.9476 - val_accuracy: 0.9610 - val_loss: 0.1870
+...
+Epoch 49/50
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 62s 52ms/step - accuracy: 0.9887 - loss: 0.0851 - val_accuracy: 0.9955 - val_loss: 0.0688
+Epoch 50/50
+1182/1182 ━━━━━━━━━━━━━━━━━━━━ 65s 55ms/step - accuracy: 0.9888 - loss: 0.0902 - val_accuracy: 0.9943 - val_loss: 0.0701
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            The addition of data augmentation and Batch Normalization significantly improved the model's performance, achieving a validation accuracy of 99.55%. These techniques make the model more robust and adaptable to real-world variations in handwritten digit recognition.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model Evaluation -->
+            <div class="grid DIG-grid-8">
+                <div class="grid-item comp-item DIG-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>8. Model Evaluation</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            Evaluating the model's performance involves analyzing the training and validation accuracy/loss curves and visualizing the confusion matrix to understand how well the model distinguishes between different digits.
+                        </b1>
+                    </div>
+                    
+                    <!-- Training and Validation Curves -->
+                    <div class="comp-txt comp-txt_subtitle">
+                        <b1>Training and Validation Curves</b1>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            The training and validation curves illustrate how the model's accuracy and loss evolved during training. These plots help identify signs of overfitting or underfitting.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# Plot Training vs Validation Accuracy
+fig, ax = plt.subplots()
+fig.patch.set_facecolor(CFG.background_color)
+ax.set_facecolor(CFG.background_color)
+ax.plot(history.history['accuracy'], label='train accuracy', color=CFG.point_color)
+ax.plot(history.history['val_accuracy'], label='validation accuracy', color='skyblue')
+legend = ax.legend(facecolor=CFG.background_color, edgecolor=CFG.font_color)
+plt.setp(legend.get_texts(), color=CFG.font_color)
+ax.set_title("Training vs Validation Accuracy", color=CFG.font_color)
+ax.set_xlabel("Epoch", color=CFG.font_color)
+ax.set_ylabel("Accuracy", color=CFG.font_color)
+ax.tick_params(colors=CFG.font_color)
+for spine in ax.spines.values():
+    spine.set_visible(False)
+plt.show()
+
+# Plot Training vs Validation Loss
+fig, ax = plt.subplots()
+fig.patch.set_facecolor(CFG.background_color)
+ax.set_facecolor(CFG.background_color)
+ax.plot(history.history['loss'], label='train loss', color=CFG.point_color)
+ax.plot(history.history['val_loss'], label='validation loss', color='skyblue')
+legend = ax.legend(facecolor=CFG.background_color, edgecolor=CFG.font_color)
+plt.setp(legend.get_texts(), color=CFG.font_color)
+ax.set_title("Training vs Validation Loss", color=CFG.font_color)
+ax.set_xlabel("Epoch", color=CFG.font_color)
+ax.set_ylabel("Loss", color=CFG.font_color)
+ax.tick_params(colors=CFG.font_color)
+for spine in ax.spines.values():
+    spine.set_visible(False)
+plt.show()
+                        </code></pre>
+                    </div>
+                    <div class="comp-img">
+                        <img loading="lazy" src="/assets/images/projects/computation/DIG/training-crv-1_R00.png">
+                        <img loading="lazy" src="/assets/images/projects/computation/DIG/training-crv-2_R00.png">
+                    </div>
+                    
+                    <!-- Confusion Matrix -->
+                    <div class="comp-txt comp-txt_subtitle">
+                        <b1>Confusion Matrix</b1>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            A confusion matrix provides detailed insights into the model's performance by showing how many times each digit was correctly or incorrectly predicted. Each row represents the true label, and each column represents the predicted label.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# Generate Confusion Matrix
+y_pred_probs = model.predict(X_val)  # Predict probabilities
+y_pred = np.argmax(y_pred_probs, axis=1)  # Convert probabilities to class labels
+
+# Create confusion matrix
+conf_matrix = confusion_matrix(y_val, y_pred)
+class_names = [i for i in range(10)]
+
+# Plot the confusion matrix
+custom_cmap = LinearSegmentedColormap.from_list([CFG.background_color, CFG.point_color])
+fig, ax = plt.subplots(figsize=(8, 6))
+fig.patch.set_facecolor(CFG.background_color)
+ax.set_facecolor(CFG.background_color)
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap=custom_cmap, xticklabels=class_names, 
+            yticklabels=class_names, cbar=False, annot_kws={"color": CFG.font_color})
+ax.set_xlabel('Predicted Label', color=CFG.font_color)
+ax.set_ylabel('True Label', color=CFG.font_color)
+ax.set_title('Confusion Matrix', color=CFG.font_color)
+ax.tick_params(axis='x', colors=CFG.font_color)
+ax.tick_params(axis='y', colors=CFG.font_color)
+for spine in ax.spines.values():
+    spine.set_visible(False)
+plt.show()
+                        </code></pre>
+                    </div>
+                    <div class="comp-img">
+                        <img loading="lazy" src="/assets/images/projects/computation/DIG/confusion-matrix_R00.png">
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            The confusion matrix highlights the model's high accuracy, showcasing its ability to distinguish between all digits with minimal misclassification.
+                        </b1>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Conclusion -->
+            <div class="grid DIG-grid-9">
+                <div class="grid-item comp-item DIG-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>9. Conclusion</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            The <a href="https://www.kaggle.com/competitions/digit-recognizer" target="_blank" rel="noopener" class="_highlight-black">Digit Recognizer competition<span class="top-right-arrow"></span></a> served as an excellent introduction to deep learning and computer vision. By experimenting with different neural network architectures, including dense and convolutional networks, and incorporating techniques like L2 regularization, dropout, batch normalization, and data augmentation, I was able to significantly improve the model's accuracy.
+                        </b1>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            The final model achieved a validation accuracy of <b>99.43%</b> and demonstrated robustness in distinguishing between handwritten digits with minimal misclassification. The use of data augmentation played a crucial role in enhancing the model's generalization capabilities, and plotting metrics like accuracy and loss curves, along with the confusion matrix, provided valuable insights into the model's performance.
+                        </b1>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            This project not only improved my understanding of neural networks and model optimization techniques but also highlighted the importance of thoughtful preprocessing, evaluation, and visualization in data science workflows.
+                        </b1>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            If you're interested in exploring the code, you can check out the <a href="https://github.com/acarmagnani/digit_recognizer" target="_blank" rel="noopener" class="_highlight-black">Github repository<span class="top-right-arrow"></span></a>.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div id="BackToTop"></div>
+
+        </div>
+    
+    </body>
+</html>

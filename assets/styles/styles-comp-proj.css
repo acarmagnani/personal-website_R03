@@ -1,0 +1,41 @@
+@import url(var.css);
+
+.language-python {
+    font-size: 100px;
+}
+
+.comp-item {
+    width: clamp(250px, 75vw, 800px);
+}
+
+.comp-img {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.comp-img img {
+    width: 100%; 
+    height: auto; 
+}
+
+
+
+.comp-txt {
+    margin: 10px 0;
+}
+
+.comp-txt_title {
+    margin-bottom: 10px;
+}
+
+.comp-txt_subtitle {
+
+    & b1 {
+        font-weight: 900;
+    }
+}
+
+.comp-txt_body {
+    text-indent: 15px;
+}

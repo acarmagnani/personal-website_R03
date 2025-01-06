@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AC - House Prices Competition</title>
+    
+        <!-- styles -->
+        <link rel="stylesheet" href="assets/styles/styles.css">
+        <link rel="stylesheet" href="assets/styles/styles-comp-proj.css">
+        <link rel="stylesheet" href="assets/styles/styles-bg-dark.css">
+        <!-- Prism.js Okaidia Theme -->
+        <link rel="stylesheet" href="assets/styles/styles-code.css">
+    
+        <!-- scripts -->
+        <script src="assets/scripts/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+        <!-- vercel -->
+        <script>
+            window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+        </script>
+        <script defer src="/_vercel/insights/script.js"></script>
+    </head>
+    <body>
+        <div id="Body">
+            <div id="Noise_bg-1"></div>
+            <div id="Header"></div>
+
+            <!-- Introduction -->
+            <div class="grid HUS-grid-1">
+                <div class="grid-item comp-item HUS-item container-2">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>1. Introduction</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            The Kaggle competition <a href="https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques" target="_blank" rel="noopener" class="_highlight-black">"House Prices - Advanced Regression Techniques"<span class="top-right-arrow"></span></a> tasks participants with predicting the sale prices of homes using the Ames Housing dataset. This dataset includes 79 explanatory variables that describe various attributes of houses, such as their size, location, and features. The goal is to develop a machine learning model that accurately predicts house prices while minimizing the root-mean-squared-error (RMSE) of the logarithmic difference between predicted and actual prices. My approach involved leveraging feature engineering and advanced regression techniques, which led to a top 2% position on the leaderboard.
+                            <br>
+                            If you're interested in viewing the full code, here's the <a href="https://github.com/acarmagnani/house_prices" target="_blank" rel="noopener" class="_highlight-black">Github repo<span class="top-right-arrow"></span></a> for this project.
+                        </b1>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration Class -->
+            <div class="grid HUS-grid-3">
+                <div class="grid-item comp-item HUS-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>2. Configuration Class</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>I created a configuration class to centralize file paths, visualization settings, and model parameters. Below is the section defining model weights and parameters for key machine learning models used in the project.</b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+class CFG:
+    # Model weights
+    lgb_weight = 0.20
+    ctb_weight = 0.20
+    xgb_weight = 0.20
+    ridge_weight = 0.20
+    rfr_weight = 0.20
+
+    # Parameters for models
+    lgb_params = {
+        'objective': 'regression',
+        'learning_rate': 0.03,
+        'num_iterations': 4000,
+        'max_depth': 4,
+        'seed': 42
+    }
+    ctb_params = {
+        'loss_function': 'RMSE',
+        'learning_rate': 0.03,
+        'num_trees': 4000,
+        'depth': 4,
+        'random_state': 42
+    }
+    xgb_params = {
+        'objective': 'reg:squarederror',
+        'learning_rate': 0.03,
+        'max_depth': 4,
+        'n_estimators': 4000,
+        'seed': 42
+    }
+    ridge_params = {
+        'alpha': 1.0,
+        'solver': 'auto',
+        'random_state': 42
+    }
+    rfr_params = {
+        'n_estimators': 1000,
+        'max_depth': 10,
+        'random_state': 42
+    }
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Defining Numerical and Categorical Columns -->
+            <div class="grid HUS-grid-4">
+                <div class="grid-item comp-item HUS-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>3. Defining Numerical and Categorical Columns</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>After loading the dataset, I identified numerical and categorical columns. This step was essential for applying tailored preprocessing techniques, such as scaling for numerical data and encoding for categorical data.</b1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outliers Detection and Removal -->
+            <div class="grid HUS-grid-5">
+                <div class="grid-item comp-item HUS-item">
+
+                    <div class="comp-txt comp-txt_title">
+                        <h3>4. Outlier Detection and Removal</h3>
+                    </div>
+
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            Outliers can negatively impact the performance of machine learning models. To address this, I performed outlier detection and removal in two steps:
+                            <ol>
+                                <li><b>Visualization:</b> Plotted numeric features against the target variable (SalePrice) to visually inspect relationships and identify potential outliers.</li>
+                                <li><b>Z-score Method:</b> Removed outliers from selected numeric features using a Z-score threshold of 4.5.</li>
+                            </ol>
+                            Below is the full implementation of these steps.
+                        </b1>
+                    </div>
+
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# Step 1: Visualization
+# Define the target column and select numeric features only, excluding the target
+target_column = 'SalePrice'
+feature_columns = [col for col in numeric_cols if col != target_column]
+
+# Determine the number of rows needed for a 4-column layout
+num_columns = 4
+num_rows = ceil(len(feature_columns) / num_columns)
+
+# Set up the figure and axes
+fig, axes = plt.subplots(num_rows, num_columns, figsize=(20, num_rows * 5), facecolor=CFG.background_color)
+fig.subplots_adjust(hspace=0.4, wspace=0.4)
+
+# Flatten the axes array for easy iteration
+axes = axes.flatten()
+
+# Plot each feature against SalePrice
+for i, feature in enumerate(feature_columns):
+    ax = axes[i]
+    ax.set_facecolor(CFG.background_color)  # Set background color of each plot
+    ax.scatter(CFG.train_df[feature], CFG.train_df[target_column], s=5, color=CFG.point_color)
+    ax.set_title(feature, color=CFG.font_color)  # Title is now only the feature name
+    ax.set_xlabel('')  # Remove x-axis label name only
+    for spine in ax.spines.values():  # Remove the border
+        spine.set_visible(False)
+    ax.tick_params(axis='x', colors=CFG.font_color)  # Apply font color to tick labels
+    ax.tick_params(axis='y', colors=CFG.font_color, labelleft=False)
+
+# Hide any unused axes if the number of plots is less than the grid
+for j in range(i + 1, len(axes)):
+    fig.delaxes(axes[j])
+
+plt.show()
+                        </code></pre>
+                    </div>
+
+                    <div class="comp-img">
+                        <img loading="lazy" src="/assets/images/projects/computation/HUS/outliers-graphs_R00.png">
+                    </div>
+
+                    <div class="comp-code">
+                        <pre><code class="language-python">            
+# Step 2: Outlier Removal
+# Define columns with and without outliers
+without_outliers = [
+    'Id', 'MSSubClass', 'OverallQual', 'OverallCond', 'YearBuilt',
+    'YearRemodAdd', 'BsmtUnfSF', 'LowQualFinSF', 'BsmtFullBath',
+    'BsmtHalfBath', 'FullBath', 'HalfBath', 'TotRmsAbvGrd',
+    'Fireplaces', 'GarageYrBlt', 'GarageCars', 'GarageArea',
+    'MoSold', 'YrSold'
+]
+with_outliers = [col for col in numeric_cols if col not in without_outliers and col != 'SalePrice']
+print(with_outliers)
+
+# Define a function to remove outliers using Z-score
+def remove_outliers_zscore(df, columns, threshold):
+    keep_rows = pd.Series([True] * len(df))
+    for col in columns:
+        col_z_scores = (df[col] - df[col].mean()) / df[col].std()  # Standardize the column
+        keep_rows &= (col_z_scores.abs() < threshold)  # Mark rows that meet the threshold
+    df_zscore_cleaned = df[keep_rows]  # Apply mask to the DataFrame
+    print(f"Removed {len(df) - len(df_zscore_cleaned)} outliers based on Z-score threshold of {threshold}")
+    return df_zscore_cleaned
+
+# Apply the function to the training data
+train_df_outlier_cleaned = remove_outliers_zscore(CFG.train_df, with_outliers, 4.5)
+train_df_outlier_cleaned.name = 'train_df_outlier_cleaned'
+                        </code></pre>
+                    </div>
+
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            Using this approach, 344 outliers were removed based on a Z-score threshold of 4.5. This cleanup step ensures the model is not influenced by extreme values, improving its overall robustness and predictive accuracy.
+                        </b1>
+                    </div>
+
+                </div>
+            </div>
+            
+            <!-- Handle Missing Values -->
+            <div class="grid HUS-grid-6">
+                <div class="grid-item comp-item HUS-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>5. Handling Missing Values</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            Missing data can introduce bias or reduce the accuracy of the model. To address this, I applied targeted imputation techniques based on the type of feature:
+                            <ul class="topics">
+                                <li><b>Numeric Features:</b> Filled missing values with the median of each column to minimize distortion caused by extreme values.</li>
+                                <li><b>Categorical Features:</b> Filled missing values with the mode (most frequent value) to maintain consistency.</li>
+                            </ul>
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# Handle missing values for numeric features
+numeric_imputer = SimpleImputer(strategy='median')
+CFG.train_df[numeric_cols] = numeric_imputer.fit_transform(CFG.train_df[numeric_cols])
+CFG.test_df[numeric_cols] = numeric_imputer.transform(CFG.test_df[numeric_cols])
+
+# Handle missing values for categorical features
+categorical_imputer = SimpleImputer(strategy='most_frequent')
+CFG.train_df[categorical_cols] = categorical_imputer.fit_transform(CFG.train_df[categorical_cols])
+CFG.test_df[categorical_cols] = categorical_imputer.transform(CFG.test_df[categorical_cols])
+
+print(f"Missing values handled: {CFG.train_df.isnull().sum().sum()} remaining in train_df, {CFG.test_df.isnull().sum().sum()} in test_df")
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            After applying these imputation techniques, all missing values were addressed. This step ensures the dataset is clean and ready for modeling without any null entries that could disrupt the training process.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature Engineering -->
+            <div class="grid HUS-grid-7">
+                <div class="grid-item comp-item HUS-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>6. Feature Engineering</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            Feature engineering is a critical step to enhance the predictive power of the model. In this project, I created 14 new features by combining or transforming existing features to better represent the underlying characteristics of the data. By engineering these features, I enriched the dataset with new insights that better represent the properties, potentially improving the model's ability to predict house prices accurately.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Log Transformation -->
+            <div class="grid HUS-grid-8">
+                <div class="grid-item comp-item HUS-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>7. Log Transformation of SalePrice</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            To reduce skewness and make the target variable (SalePrice) more normally distributed, I applied a log transformation. This transformation ensures that the model treats relative changes equally for both high and low values, improving its ability to generalize across a wider range of house prices.
+                        </b1>
+                    </div>
+                    <div class="comp-img">
+                        <img loading="lazy" src="/assets/images/projects/computation/HUS/log-transformation_R00.png">
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            This step ensures that the target variable is better suited for regression models, which often assume normally distributed data for optimal performance.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Encoding of Columns -->
+            <div class="grid HUS-grid-9">
+                <div class="grid-item comp-item HUS-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>8. Encoding of Columns</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            To prepare the data, I implemented pipelines for categorical and numerical features:
+                            <ul class="topics">
+                                <li><b>Ordinal Features:</b> Encoded using an ordinal encoder for ordered categories.</li>
+                                <li><b>Nominal Features:</b> Encoded using one-hot encoding for unordered categories.</li>
+                                <li><b>Numerical Features:</b> Imputed missing values and scaled for consistency.</li>
+                            </ul>
+                            These pipelines were combined into a column transformer to streamline the preprocessing workflow.
+                        </b1>
+                    </div>
+                    <div class="comp-code">
+                        <pre><code class="language-python">
+# Define ordinal and nominal features
+ode_cols = ['LotShape', 'LandContour', 'Utilities', 'LandSlope', 'BsmtQual', 
+            'BsmtFinType1', 'CentralAir', 'Functional', 'PoolQC', 'Fence', 
+            'FireplaceQu', 'GarageFinish', 'GarageQual', 'PavedDrive', 
+            'ExterCond', 'KitchenQual', 'BsmtExposure', 'HeatingQC', 
+            'ExterQual', 'BsmtCond']
+ohe_cols = [col for col in train_df_log_transformed.select_dtypes(include=['object']).columns if col not in ode_cols]
+num_cols = numeric_cols.drop('SalePrice')
+
+# Define pipelines
+ode_pipeline = Pipeline(steps=[
+    ('impute', SimpleImputer(strategy='most_frequent')),
+    ('ode', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1))
+])
+ohe_pipeline = Pipeline(steps=[
+    ('impute', SimpleImputer(strategy='most_frequent')),
+    ('ohe', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
+])
+num_pipeline = Pipeline(steps=[
+    ('impute', SimpleImputer(strategy='mean')),
+    ('scaler', StandardScaler())
+])
+
+# Build column transformer
+col_trans = ColumnTransformer(transformers=[
+    ('num_p', num_pipeline, num_cols),
+    ('ode_p', ode_pipeline, ode_cols),
+    ('ohe_p', ohe_pipeline, ohe_cols),
+], remainder='passthrough', n_jobs=-1)
+                        </code></pre>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            This preprocessing pipeline ensures that all features are correctly formatted for the model, minimizing the risk of errors and optimizing performance.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model Training -->
+            <div class="grid HUS-grid-10">
+                <div class="grid-item comp-item HUS-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>9. Model Training</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            For model training, I used five machine learning models: 
+                            Random Forest Regressor (RFR), XGBoost (XGB), Ridge Regression, 
+                            LightGBM (LGBM), and CatBoost (CB). For each model, I applied the following steps:
+                            <ul class="topics">
+                                <li><b>Hyperparameter Tuning:</b> Conducted a grid search using GridSearchCV to find the optimal hyperparameters for each model. This step involved cross-validation to minimize overfitting and ensure robust performance.</li>
+                                <li><b>Best Parameters:</b> Extracted the best parameters for each model after grid search, such as the number of estimators, learning rate, or maximum depth.</li>
+                                <li><b>Final Training:</b> Trained the models with the best parameters on the entire training dataset.</li>
+                                <li><b>Performance Metrics:</b> Evaluated the models using Root Mean Squared Error (RMSE), a key metric for this competition.</li>
+                            </ul>
+                            The following are the results and best parameters for each model:
+                            <ul class="topics">
+                                <li><b>Random Forest Regressor (RFR):</b> RMSE: 0.1393 | Best Parameters: max_depth=15, min_samples_split=3, n_estimators=250</li>
+                                <li><b>XGBoost (XGB):</b> RMSE: 0.1252 | Best Parameters: learning_rate=0.05, max_depth=3, n_estimators=300</li>
+                                <li><b>Ridge Regression:</b> RMSE: 0.1223 | Best Parameters: alpha=10, solver='sag'</li>
+                                <li><b>LightGBM (LGBM):</b> RMSE: 0.1344 | Best Parameters: boosting_type='gbdt', learning_rate=0.05, n_estimators=200, num_leaves=20</li>
+                                <li><b>CatBoost (CB):</b> RMSE: 0.1260 | Best Parameters: depth=5, iterations=500, learning_rate=0.05</li>
+                            </ul>
+                            These models, each tuned to their optimal configurations, laid the foundation for robust predictions.
+                        </b1>
+                    </div>
+                </div>
+            </div>  
+            
+            <!-- Voting and Stacking -->
+            <div class="grid HUS-grid-11">
+                <div class="grid-item comp-item HUS-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>10. Voting and Stacking</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            To further enhance the model's predictive performance, I implemented two ensemble techniques: 
+                            <ul class="topics">
+                                <li><b>Voting Regressor:</b> Combined predictions from five models (Random Forest, XGBoost, Ridge Regression, LightGBM, and CatBoost) using equal weights. This approach leverages the strengths of individual models to produce a more robust prediction.</li>
+                                <li><b>Stacking Regressor:</b> Used the predictions from the same five models as inputs to a final estimator (the Voting Regressor). This hierarchical ensemble technique captures complex relationships between base models, improving predictive accuracy.</li>
+                            </ul>
+                            The models were evaluated using Root Mean Squared Error (RMSE) on the test dataset:
+                            <ul class="topics">
+                                <li><b>Voting Regressor:</b> RMSE: 0.1009</li>
+                                <li><b>Stacking Regressor:</b> RMSE: 0.1025</li>
+                            </ul>
+                            These ensemble methods significantly improved the stability and performance of the predictions, showcasing the power of combining multiple models in a structured manner.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Conclusion -->
+            <div class="grid HUS-grid-12">
+                <div class="grid-item comp-item HUS-item">
+                    <div class="comp-txt comp-txt_title">
+                        <h3>11. Conclusion</h3>
+                    </div>
+                    <div class="comp-txt comp-txt_body">
+                        <b1>
+                            This project provided a deep dive into predictive modeling for real-world data. 
+                            Through advanced regression techniques, feature engineering, and ensemble modeling, 
+                            I developed a solution that ranked in the top 2% on Kaggle's leaderboard. 
+                            The comprehensive approach emphasized preprocessing, rigorous model evaluation, 
+                            and ensemble learning to deliver robust and accurate predictions. 
+                            Explore the codebase <a href="https://github.com/acarmagnani/house_prices" target="_blank" rel="noopener" class="_highlight-black">here<span class="top-right-arrow"></span></a>.
+                        </b1>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div id="BackToTop"></div>
+            
+        </div>
+    </body>
+</html>

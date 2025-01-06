@@ -1,21 +1,11 @@
 @import url(var.css);
 
-/* LANG */
-.lang-item-1 {
-    right: 10vw;
-}
-
-.lang-item-2 {
-    right: 5vw;
-}
-
 /* WORKS */
 .works-item img {
     width: 100%;
 }
 
 .works-info {
-    margin-bottom: var(--pad);
     white-space: nowrap;
 }
 

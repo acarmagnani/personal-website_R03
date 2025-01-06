@@ -104,11 +104,11 @@
 ._highlight-black {
     text-decoration: underline;
     text-decoration-color: var(--txt-c-4);
+    transition-duration: var(--def-duration);
 }
 ._highlight-black:hover {
     background-color: var(--txt-c-2);
     color: var(--txt-c-4);
-    text-decoration: none;
 }
 
 /* hover - invert colors */
@@ -186,7 +186,28 @@ ul {
     margin: 0;
     list-style: none;
     padding-left: 0;
-    line-height: 1;
+
+    padding: 15px 0;
+}
+
+ul li {
+    padding: 5px 0;
+}
+
+ul.topics {
+    list-style-type: none;
+    padding-left: clamp(5px, 2vw, 20px); 
+}
+
+ul.topics li {
+    position: relative; 
+    padding-left: clamp(20px, 5vw, 30px); 
+}
+
+ul.topics li::before {
+    content: "->"; 
+    position: absolute; 
+    left: 0; 
 }
 
 h1,h2,h3,b1,b2,b3 {
@@ -230,6 +251,16 @@ b1 {
     background-color: var(--b1-bg-c);
 
     font-size: clamp(12px, 2vw, 16px);
+    line-height: 1.3;
+    font-style: normal;
+}
+
+b2 {
+    font-family: "Roboto Mono";
+    color: var(--b1-c);
+    background-color: var(--b1-bg-c);
+
+    font-size: clamp(10px, 2vw, 12px);
     line-height: 1.3;
     font-style: normal;
 }
