@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // COMMON: Load header, footer, and back-to-top components
     fetchAndInsert('/common/header.html', 'Header', startTypewriterAnimation);
     fetchAndInsert('/common/footer.html', 'Footer');
-    fetchAndInsert('/common/backtotop.html', 'BackToTop');
+    fetchAndInsert('/common/backtotop.html', 'BackToTop', initializeScrollToTop);
 });
 
 // Function to fetch and insert HTML into the target element
@@ -97,9 +97,27 @@ function startTypewriterAnimation() {
     startAnimation();
 }
 
+
+
+// Scroll to top function
 function scrollToTop() {
     window.scrollTo({
         top: 0,
         behavior: 'smooth'
+    });
+}
+
+// Initialize scroll-to-top logic
+function initializeScrollToTop() {
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    if (!scrollToTopBtn) return;
+
+    // Show/hide the button based on scroll position
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 500) { // Adjust the threshold as needed
+            scrollToTopBtn.classList.add('visible');
+        } else {
+            scrollToTopBtn.classList.remove('visible');
+        }
     });
 }
