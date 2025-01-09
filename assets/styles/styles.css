@@ -350,18 +350,17 @@ body {
 
 
 
-/* Scroll-to-top button styles */
+/* Scroll-to-top button */
 #scrollToTopBtn {
     position: fixed;
     bottom: 50px;
-    right: clamp(20px, 10vw, 150px);
+    right: 10%;
     opacity: 0;
     z-index: 1000;
     pointer-events: none; 
     transition: opacity 0.3s ease, background-color var(--def-duration); 
 }
 
-/* Make the button visible */
 #scrollToTopBtn.visible {
     opacity: 1; 
     pointer-events: auto; 

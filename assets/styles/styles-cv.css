@@ -18,3 +18,7 @@
     width: clamp(120px, 70vw, 500px);
     left: 5vw;
 }
+
+.cv-item-3_1 {
+    left: 15vw;
+}
