@@ -1,0 +1,104 @@
+/* A4 Page Formatting */
+@page {
+    size: 21cm 29.7cm;
+    margin: 30mm 45mm 30mm 45mm;
+}
+@media print {
+    body {
+        width: 21cm;
+        margin: 0 auto;
+        height: 29.7cm;
+        display: block;
+    }
+}
+
+/* VARIABLES */
+:root {
+    --scale: 2.2;
+}
+
+/* General Styling */
+body {
+    font-family: "Times New Roman", serif;
+    margin: 0;
+    padding: 0;
+    display: block;
+    background-color: #000000;
+}
+.cv-container {
+    width: 21cm;
+    height: 31cm;
+    margin: 0 auto;
+    background: white;
+    padding: 20px 30px;
+}
+
+h1 {
+    font-size: calc(var(--scale) * 12px);
+}
+b1 {
+    font-size: calc(var(--scale) * 7px);
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+    list-style-position: outside;
+    margin-left: 1.2em;
+    text-indent: 0;
+}
+ul li::marker {
+    font-size: calc(var(--scale) * 6px);
+}
+
+/* Header */
+.header {
+    text-align: center;
+}
+.header h1 {
+    margin: 0;
+}
+.contact-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: calc(var(--scale) * 5px);
+    margin-top: calc(var(--scale) * 2px);
+}
+
+/* Grid Layout for Sections */
+.cv-section {
+    display: grid;
+    grid-template-columns: calc(var(--scale) * 50px) 1fr;
+    gap: 10px;
+    margin-top: 20px;
+}
+.section-title {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.section-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.present {
+    text-transform: none;
+    font-weight: 100;
+    padding-top: calc(var(--scale) * 33.5px);
+}
+
+/* Experience & Education Layout */
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+}
+.entry-location {
+    text-align: right;
+}
+.entry-dates {
+    text-align: left;
+    font-style: italic;
+}
